@@ -24,7 +24,7 @@
 
         try {
             // Replace with your actual Vercel deployment URL
-            const endpoint = "https://emails.andrinoff.com/api/andrinoff";
+            const endpoint = "https://emails.andrinoff.com/api/smira";
 
             const response = await fetch(endpoint, {
                 method: "POST",
