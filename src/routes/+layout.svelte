@@ -1,6 +1,5 @@
-<!-- src/routes/+layout.svelte -->
 <script>
-    import "../app.css"; // Make sure to import your global styles
+    import "../app.css";
     let isMobileMenuOpen = false;
 
     function toggleMobileMenu() {

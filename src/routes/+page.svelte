@@ -1,4 +1,8 @@
-<!-- src/routes/+page.svelte -->
+<script>
+    import Techstack from "$lib/components/techstack.svelte";
+    import projects from "$lib/arrays/projects.js";
+</script>
+
 <svelte:head>
     <title>Andrey Smirnov - Developer Portfolio</title>
     <meta
@@ -16,7 +20,6 @@
 <div class="hero-bg">
     <!-- Hero Section -->
     <section id="hero" class="pt-32 pb-20 md:pt-48 md:pb-32 text-center">
-        §
         <div class="container mx-auto px-6">
             <h1 class="text-4xl md:text-6xl font-bold text-white leading-tight">
                 Andrey Smirnov
@@ -26,8 +29,10 @@
             </p>
             <p class="mt-6 max-w-2xl mx-auto text-gray-400">
                 Currently employed at
-                <a href="https://www.siderolabs.com/">Sidero Labs</a> <br />
-                And working on <a href="www.talos.dev">Talos</a>
+                <a href="https://www.siderolabs.com/" class="link"
+                    >Sidero Labs</a
+                > <br />
+                And working on <a href="www.talos.dev" class="link">Talos</a>
             </p>
             <div class="mt-10 flex justify-center gap-4 flex-wrap">
                 <a
@@ -72,41 +77,38 @@
         </h2>
         <div class="w-24 h-1 bg-indigo-500 mx-auto mb-12"></div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Project Card 1 -->
-            <div
-                class="bg-gray-800 rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-2 transition-transform duration-300"
-            >
-                <img
-                    src="https://www.aptly.info/img/1.png"
-                    alt="Project One Thumbnail"
-                    class="w-full h-56 object-cover"
-                />
-                <div class="p-6">
-                    <h3 class="text-xl font-bold text-white mb-2">Aptly</h3>
-                    <p class="text-gray-400 mb-4">
-                        Debian repository management tool.
-                    </p>
-                    <div class="flex gap-2 flex-wrap mb-4">
-                        <span
-                            class="bg-indigo-500/20 text-indigo-300 text-xs font-semibold px-2.5 py-1 rounded-full"
-                            >Go</span
-                        >
-                        <span
-                            class="bg-indigo-500/20 text-indigo-300 text-xs font-semibold px-2.5 py-1 rounded-full"
-                            >Python</span
-                        >
-                        <span
-                            class="bg-indigo-500/20 text-indigo-300 text-xs font-semibold px-2.5 py-1 rounded-full"
-                            >Shell</span
+            {#each projects as project}
+                <div
+                    class="bg-gray-800 rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-2 transition-transform duration-300"
+                >
+                    <img
+                        src={project.Image}
+                        alt="{project.Name} Thumbnail"
+                        class="w-full h-56 object-cover"
+                    />
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white mb-2">
+                            {project.Name}
+                        </h3>
+                        <p class="text-gray-400 mb-4">
+                            {project.Description}
+                        </p>
+                        <div class="flex gap-2 flex-wrap mb-4">
+                            {#each project.Stack as stack}
+                                <span
+                                    class="bg-indigo-500/20 text-indigo-300 text-xs font-semibold px-2.5 py-1 rounded-full"
+                                    >{stack}</span
+                                >
+                            {/each}
+                        </div>
+                        <a
+                            href={project.Link}
+                            class="text-indigo-400 hover:text-indigo-300 font-semibold"
+                            >View Details &rarr;</a
                         >
                     </div>
-                    <a
-                        href="https://github.com/aptly-dev/aptly"
-                        class="text-indigo-400 hover:text-indigo-300 font-semibold"
-                        >View Details &rarr;</a
-                    >
                 </div>
-            </div>
+            {/each}
         </div>
     </div>
 </section>
@@ -114,86 +116,8 @@
 <!-- Skills Section -->
 <section id="skills" class="py-20 md:py-32 bg-gray-900">
     <div class="container mx-auto px-6">
-        <h2 class="text-3xl md:text-4xl font-bold text-white text-center mb-6">
-            My Tech Stack
-        </h2>
-        <div class="w-24 h-1 bg-indigo-500 mx-auto mb-12"></div>
-        <div
-            class="max-w-4xl mx-auto flex flex-wrap justify-center gap-8 text-center"
-        >
-            <!-- Skill Item -->
-            <div class="flex flex-col items-center gap-2">
-                <svg
-                    class="w-16 h-16 text-indigo-400"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    ><path
-                        d="M12 2L1 9l11 7 11-7L12 2zm0 18.5L1 13.5v2l11 7 11-7v-2L12 20.5z"
-                    /></svg
-                >
-                <span class="font-semibold">JavaScript (ES6+)</span>
-            </div>
-            <div class="flex flex-col items-center gap-2">
-                <svg
-                    class="w-16 h-16 text-indigo-400"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    ><path
-                        d="M22.2 12c0-5.5-4.5-10-10-10S2.2 6.5 2.2 12s4.5 10 10 10 10-4.5 10-10zm-10 8.2c-4.5 0-8.2-3.7-8.2-8.2S7.7 3.8 12.2 3.8s8.2 3.7 8.2 8.2-3.7 8.2-8.2 8.2zM11 10.9c-.6 0-1.1.5-1.1 1.1s.5 1.1 1.1 1.1 1.1-.5 1.1-1.1-.5-1.1-1.1-1.1zm2.4 0c-.6 0-1.1.5-1.1 1.1s.5 1.1 1.1 1.1 1.1-.5 1.1-1.1-.5-1.1-1.1-1.1zm2.4 0c-.6 0-1.1.5-1.1 1.1s.5 1.1 1.1 1.1 1.1-.5 1.1-1.1-.5-1.1-1.1-1.1z"
-                    /></svg
-                >
-                <span class="font-semibold">Svelte / SvelteKit</span>
-            </div>
-            <div class="flex flex-col items-center gap-2">
-                <svg
-                    class="w-16 h-16 text-indigo-400"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    ><path
-                        d="M12 15.5c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6zm0-10c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4z"
-                    /><path
-                        d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8z"
-                    /><path
-                        d="M12 12.5c-1.4 0-2.5-1.1-2.5-2.5s1.1-2.5 2.5-2.5 2.5 1.1 2.5 2.5-1.1 2.5-2.5 2.5z"
-                    /></svg
-                >
-                <span class="font-semibold">React / Next.js</span>
-            </div>
-            <div class="flex flex-col items-center gap-2">
-                <svg
-                    class="w-16 h-16 text-indigo-400"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    ><path d="M7 2v20h10V2H7zm8 18H9V4h6v16z" /></svg
-                >
-                <span class="font-semibold">Node.js / Express</span>
-            </div>
-            <div class="flex flex-col items-center gap-2">
-                <svg
-                    class="w-16 h-16 text-indigo-400"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    ><path
-                        d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-1 16H9v-6h2v6zm2 0h-2v-6h2v6zm4 0h-2v-6h2v6z"
-                    /></svg
-                >
-                <span class="font-semibold">SQL & NoSQL DBs</span>
-            </div>
-            <div class="flex flex-col items-center gap-2">
-                <svg
-                    class="w-16 h-16 text-indigo-400"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    ><path d="M20 18H4V6h16v12zM6 8v8h12V8H6z" /></svg
-                >
-                <span class="font-semibold">Docker & CI/CD</span>
-            </div>
+        <div class="flex flex-row justify-center gap-20">
+            <Techstack></Techstack>
         </div>
     </div>
 </section>
@@ -242,6 +166,10 @@
 </section>
 
 <style>
+    .link {
+        @apply underline-offset-2 underline;
+    }
+
     .hero-bg {
         background-color: #1a1a1a;
         background-image: radial-gradient(
