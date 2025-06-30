@@ -118,7 +118,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 border-t border-gray-800">
+    <footer class="bg-gray-800/50 border-t border-gray-800">
         <div class="container mx-auto px-6 py-8 text-center text-gray-500">
             <p>
                 &copy; {new Date().getFullYear()} Andrey Smirnov. All rights reserved.
