@@ -1,6 +1,68 @@
 <script>
     import Techstack from "$lib/components/techstack.svelte";
     import projects from "$lib/arrays/projects.js";
+
+    // State variables for the contact form inputs
+    let name = "";
+    let email = "";
+    let content = "";
+
+    // State for handling form submission status and messages
+    let isSubmitting = false;
+    let formMessage = "";
+    let messageIsError = false;
+
+    /**
+     * Handles the form submission process.
+     * It prevents the default form action, sends the data to the serverless function,
+     * and displays feedback to the user.
+     */
+    async function handleSubmit() {
+        isSubmitting = true;
+        formMessage = "";
+        messageIsError = false;
+
+        try {
+            // Replace with your actual Vercel deployment URL
+            const endpoint = "https://emails.andrinoff.com/api/andrinoff";
+
+            const response = await fetch(endpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    content: content,
+                }),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                // If the server returns an error (e.g., 4xx or 5xx)
+                throw new Error(result.message || "Something went wrong.");
+            }
+
+            // Handle success
+            formMessage =
+                result.message || "Your message has been sent successfully!";
+            messageIsError = false;
+            // Clear the form fields
+            name = "";
+            email = "";
+            content = "";
+        } catch (error) {
+            // Handle network errors or errors thrown from the response check
+            formMessage = error.message;
+            messageIsError = true;
+            console.error("Error submitting form:", error);
+        } finally {
+            // Re-enable the submit button
+            isSubmitting = false;
+        }
+    }
 </script>
 
 <svelte:head>
@@ -32,7 +94,8 @@
                 <a href="https://www.siderolabs.com/" class="link"
                     >Sidero Labs</a
                 > <br />
-                And working on <a href="www.talos.dev" class="link">Talos</a>
+                And working on
+                <a href="https://www.talos.dev" class="link">Talos</a>
             </p>
             <div class="mt-10 flex justify-center gap-4 flex-wrap">
                 <a
@@ -134,32 +197,51 @@
                 Have a project in mind or just want to say hello? My inbox is
                 always open.
             </p>
-            <form class="text-left">
+            <!-- Bind the submit event to our handleSubmit function -->
+            <form class="text-left" on:submit|preventDefault={handleSubmit}>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <input
                         type="text"
                         placeholder="Your Name"
                         class="bg-gray-700 border border-gray-600 rounded-lg py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        bind:value={name}
+                        required
                     />
                     <input
                         type="email"
                         placeholder="Your Email"
                         class="bg-gray-700 border border-gray-600 rounded-lg py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        bind:value={email}
+                        required
                     />
                 </div>
                 <textarea
                     placeholder="Your Message"
                     rows="6"
                     class="w-full bg-gray-700 border border-gray-600 rounded-lg py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-6"
+                    bind:value={content}
+                    required
                 ></textarea>
                 <div class="text-center">
                     <button
                         type="submit"
-                        class="bg-indigo-600 text-white font-semibold py-3 px-12 rounded-lg hover:bg-indigo-700 transition-transform duration-300 transform hover:scale-105 shadow-lg"
+                        class="bg-indigo-600 text-white font-semibold py-3 px-12 rounded-lg hover:bg-indigo-700 transition-transform duration-300 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={isSubmitting}
                     >
-                        Send Message
+                        <!-- Change button text based on submission state -->
+                        {isSubmitting ? "Sending..." : "Send Message"}
                     </button>
                 </div>
+                <!-- Display success or error messages to the user -->
+                {#if formMessage}
+                    <p
+                        class="mt-4 text-center {messageIsError
+                            ? 'text-red-400'
+                            : 'text-green-400'}"
+                    >
+                        {formMessage}
+                    </p>
+                {/if}
             </form>
         </div>
     </div>
