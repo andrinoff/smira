@@ -1,75 +1,39 @@
 <script>
-    import { onMount, onDestroy } from "svelte";
+    // Import the list of technologies from an external file.
     import TechstackItems from "$lib/arrays/techstack.js";
-    const NUM_COLUMNS = 4;
-    let columns = [];
 
-    // Distribute and shuffle items into columns for a more random look
-    for (let i = 0; i < NUM_COLUMNS; i++) {
-        const shuffled = [...TechstackItems].sort(() => 0.5 - Math.random());
-        // Duplicate for seamless looping
-        columns.push([...shuffled, ...shuffled, ...shuffled]);
-    }
-
-    let columnElements = [];
-    let animationFrameIds = [];
-
-    onMount(() => {
-        columnElements.forEach((columnEl, i) => {
-            if (!columnEl) return;
-
-            const isScrollingDown = i % 2 === 0;
-            const scrollHeight = columnEl.scrollHeight / 3;
-            let scrollTop = isScrollingDown ? 0 : scrollHeight;
-            const speed = 0.3 + Math.random() * 0.4; // Random speed for each column
-
-            const animate = () => {
-                if (isScrollingDown) {
-                    scrollTop += speed;
-                    if (scrollTop >= scrollHeight) {
-                        scrollTop = 0;
-                    }
-                } else {
-                    // Scrolling Up
-                    scrollTop -= speed;
-                    if (scrollTop <= 0) {
-                        scrollTop = scrollHeight;
-                    }
-                }
-
-                if (columnEl) {
-                    columnEl.scrollTop = scrollTop;
-                }
-                animationFrameIds[i] = requestAnimationFrame(animate);
-            };
-
-            animate();
-        });
-    });
-
-    onDestroy(() => {
-        animationFrameIds.forEach((id) => cancelAnimationFrame(id));
-    });
+    // Duplicate the items to create a seamless, infinite scrolling effect.
+    // The animation will scroll through the first set, and by the time it ends,
+    // the second set is in place, creating a perfect loop.
+    const scrollingItems = [...TechstackItems, ...TechstackItems];
 </script>
 
 <div class="tech-stack-container">
-    <h1 class="section-title">My Tech Stack</h1>
-    <div class="scroller-waterfall-container">
-        {#each columns as columnItems, i}
-            <div class="scroller-column">
-                <div class="scroller-content" bind:this={columnElements[i]}>
-                    {#each columnItems as item}
-                        <div class="tech-item" title={item.name}>
-                            <img
-                                src="https://cdn.simpleicons.org/{item.image}/white"
-                                alt="{item.name} icon"
-                                class="tech-icon"
-                            />
-                        </div>
-                    {/each}
+    <!-- This title can be customized or removed as needed -->
+    <h2 class="text-3xl md:text-4xl font-bold text-white text-center mb-6">
+        My Tech Stack
+    </h2>
+    <div class="w-24 h-1 bg-indigo-500 mx-auto mb-12"></div>
+
+    <!--
+        The scroller container has a mask to fade the items at the edges.
+        On hover, the animation on the child .scroller-content is paused via CSS.
+    -->
+    <div class="scroller-container">
+        <div
+            class="scroller-content"
+            style="--item-count: {TechstackItems.length}"
+        >
+            {#each scrollingItems as item}
+                <div class="tech-item" title={item.name}>
+                    <img
+                        src="https://cdn.simpleicons.org/{item.image}/white"
+                        alt="{item.name} icon"
+                        class="tech-icon"
+                    />
                 </div>
-            </div>
-        {/each}
+            {/each}
+        </div>
     </div>
 </div>
 
@@ -79,101 +43,102 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        padding: 2rem 0;
     }
 
-    .section-title {
-        /* Assuming this class is defined in a parent/global style */
-        /* If not, add styles here e.g.: */
-        font-size: 2rem;
-        color: #c9d1d9;
-        margin-bottom: 2rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid #30363d;
-    }
-
-    .scroller-waterfall-container {
-        display: flex;
-        justify-content: center;
-        gap: 1.5rem;
-        height: 400px;
+    .scroller-container {
         width: 100%;
-        max-width: 500px; /* Adjust width as needed */
-        position: relative;
+        max-width: 90vw; /* Limit the width on larger screens */
         overflow: hidden;
+        position: relative;
+        /* Add padding to create a buffer for items to scale into without being clipped. */
+        padding: 1rem 1.5rem;
+        /* Mask to fade out the edges for a cleaner look */
         -webkit-mask-image: linear-gradient(
-            to bottom,
+            to right,
             transparent,
-            black 20%,
-            black 80%,
+            black 15%,
+            black 85%,
             transparent
         );
         mask-image: linear-gradient(
-            to bottom,
+            to right,
             transparent,
-            black 20%,
-            black 80%,
+            black 15%,
+            black 85%,
             transparent
         );
     }
 
-    .scroller-column {
-        height: 100%;
-        width: 100px; /* Width of each column */
-    }
-
     .scroller-content {
-        height: 100%;
-        overflow-y: scroll;
-        /* Hide scrollbars */
-        -ms-overflow-style: none;
-        scrollbar-width: none;
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 2rem; /* Space between items */
+        /* Apply the scrolling animation */
+        animation: scroll linear infinite;
+        animation-duration: calc(
+            var(--item-count) * 2.5s
+        ); /* Dynamic duration */
     }
 
-    .scroller-content::-webkit-scrollbar {
-        display: none;
+    /* Pause the animation when the user hovers over the container */
+    .scroller-container:hover .scroller-content {
+        animation-play-state: paused;
     }
 
     .tech-item {
+        flex-shrink: 0; /* Prevent items from shrinking */
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 100px;
-        width: 100px;
+        height: 120px;
+        width: 120px;
         background-color: #161b22;
         border: 1px solid #30363d;
         border-radius: 16px;
-        margin-bottom: 1.5rem;
-        transition:
-            background-color 0.2s ease,
-            transform 0.2s ease;
+        transition: transform 0.3s ease; /* Smooth transition for scaling */
+        cursor: pointer;
     }
 
+    /* Increase the size of the item on hover */
     .tech-item:hover {
-        background-color: #21262d;
-        transform: scale(1.05);
+        transform: scale(1.2);
     }
 
     .tech-icon {
-        width: 48px;
-        height: 48px;
-        opacity: 0.8;
+        width: 60px;
+        height: 60px;
+        opacity: 0.9;
+        pointer-events: none; /* Prevent icon from capturing hover events */
     }
 
-    @media (max-width: 600px) {
-        .scroller-waterfall-container {
-            gap: 1rem;
-            max-width: 100%;
+    /* Define the keyframes for the horizontal scroll animation */
+    @keyframes scroll {
+        from {
+            transform: translateX(0);
         }
-        .scroller-column {
-            width: 80px;
+        to {
+            /* Move the content to the left by the width of the first half of the items.
+                Each item is 120px wide + 2rem (32px) gap = 152px total width.
+            */
+            transform: translateX(calc(-152px * var(--item-count)));
         }
+    }
+
+    @media (max-width: 768px) {
         .tech-item {
-            width: 80px;
-            height: 80px;
+            height: 100px;
+            width: 100px;
         }
         .tech-icon {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
+        }
+        @keyframes scroll {
+            to {
+                /* 100px width + 32px gap */
+                transform: translateX(calc(-132px * var(--item-count)));
+            }
         }
     }
 </style>

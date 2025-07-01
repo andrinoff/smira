@@ -3,6 +3,7 @@
     import About from "$lib/components/About.svelte";
     import Projects from "$lib/components/Projects.svelte";
     import Skills from "$lib/components/Skills.svelte";
+    import Resume from "$lib/components/Resume.svelte"; // Import the new component
     import Contact from "$lib/components/Contact.svelte";
 </script>
 
@@ -27,6 +28,8 @@
 <About />
 <Projects />
 <Skills />
+<Resume />
+<!-- Add the new component here -->
 <Contact />
 
 <style>
