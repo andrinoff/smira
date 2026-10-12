@@ -45,7 +45,7 @@
     "svelte"
   ],
   "dependencies": {
-    "@sveltejs/adapter-static": "^3.0.8",
+    "@sveltejs/adapter-static": "^4.0.0",
     "@tailwindcss/vite": "^4.1.11",
     "tailwindcss": "^4.1.11"
   }
